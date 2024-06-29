@@ -56,3 +56,9 @@ void poly_Zw_mod_q(const Term* a, Term q, Term* r){
         r[i] = poly_div_rat(a[i],q);
     }
 }
+void ZwCnC3_mod_q(const Term* a, Term q, Term* r){
+    
+    for(int i = 0;i<N3;i++){
+        r[i] = poly_div_rat(a[i],q);
+    }
+}

@@ -59,31 +59,33 @@ int ppke_keypair(unsigned char *pk, unsigned char* sk,unsigned char arr_seed[N3_
 
     sample_lg(g,arr_seed+N3_SAMPLE_F_BYTES);
 
-    group_ring FQ;
-    group_ring G;
+    // group_ring FQ;
+    // group_ring G;
 
-    poly_to_CnC3(fq,&FQ);
-    poly_to_CnC3(g,&G);
+    // poly_to_CnC3(fq,&FQ);
+    // poly_to_CnC3(g,&G);
 
-    group_ring RES_FQ_G;
-    RES_FQ_G.a = (Term*)malloc(N*sizeof(Term));
-    RES_FQ_G.b = (Term*)malloc(N*sizeof(Term));
-    RES_FQ_G.c = (Term*)malloc(N*sizeof(Term));
+    // group_ring RES_FQ_G;
+    // RES_FQ_G.a = (Term*)malloc(N*sizeof(Term));
+    // RES_FQ_G.b = (Term*)malloc(N*sizeof(Term));
+    // RES_FQ_G.c = (Term*)malloc(N*sizeof(Term));
 
-    poly_ZwCnC3_mul(&FQ,&G,T,&RES_FQ_G);
+    // Term res_fq_g[N3];
+
+    Zw_CnC3_multiply(fq,g,h);
 
     // poly_Zw_mul_mod_q(fq,g,q,h);
-    poly_ZwCnC3_mod(&RES_FQ_G,q,&RES_FQ_G);
+    // ZwCnC3_mod_q(res_fq_g,q,&RES_FQ_G);
 
-    for(int i = 0;i<N;i++){
-        h[i] = RES_FQ_G.a[i];
-    }
-    for(int i = N;i<2*N;i++){
-        h[i] = RES_FQ_G.b[i-N];
-    }
-    for(int i = 2*N;i<3*N;i++){
-        h[i] = RES_FQ_G.c[i-2*N];
-    }
+    // for(int i = 0;i<N;i++){
+    //     h[i] = RES_FQ_G.a[i];
+    // }
+    // for(int i = N;i<2*N;i++){
+    //     h[i] = RES_FQ_G.b[i-N];
+    // }
+    // for(int i = 2*N;i<3*N;i++){
+    //     h[i] = RES_FQ_G.c[i-2*N];
+    // }
 
     // printf("\nInside key gen\n");
 
@@ -133,23 +135,25 @@ void ppke_encrypt(unsigned char* c,Term* phi, Term *h, Term* m){
     // poly_ZwCnC3_print(M);
     // printf("\n------------------------------\n");
 
-    group_ring H;
-    group_ring M;
-    group_ring E;
+    // group_ring H;
+    // group_ring M;
+    // group_ring E;
 
     Term e[N3];
 
-    poly_to_CnC3(e,&E);
+    // poly_to_CnC3(e,&E);
 
 
-    poly_to_CnC3(h,&H);
-    poly_to_CnC3(m,&M);
+    // poly_to_CnC3(h,&H);
+    // poly_to_CnC3(m,&M);
 
-    poly_Zw_mul_p(H.a,P,N);
-    poly_Zw_mul_p(H.b,P,N);
-    poly_Zw_mul_p(H.c,P,N);
+    // poly_Zw_mul_p(H.a,P,N);
+    // poly_Zw_mul_p(H.b,P,N);
+    // poly_Zw_mul_p(H.c,P,N);
 
-    poly_ZwCnC3_mod(&H,q,&H);
+    poly_Zw_mul_p(h,P,N3);
+
+    // ZwCnC3_mod_q(h,q,h);
 
 
     // unsigned char arr_seed[N3_SAMPLE_BYTES];
@@ -160,25 +164,34 @@ void ppke_encrypt(unsigned char* c,Term* phi, Term *h, Term* m){
 
     // sample_lphi(phi,arr_seed);
 
-    group_ring PHI;
+    // group_ring PHI;
 
-    poly_to_CnC3(phi,&PHI);
-    poly_ZwCnC3_mod(&PHI,q,&PHI);
+    // poly_to_CnC3(phi,&PHI);
+    // poly_ZwCnC3_mod(&PHI,q,&PHI);
+
+    // ZwCnC3_mod_q(phi,q,phi);
 
     
 
-    poly_ZwCnC3_mul(&H, &PHI, T, &E);//E = PHI*H
+    // poly_ZwCnC3_mul(&H, &PHI, T, &E);//E = PHI*H
 
-    poly_ZwCnC3_mod(&E,q,&E);
+    // poly_ZwCnC3_mod(&E,q,&E);
+
+    Zw_CnC3_multiply(h,phi,e);
+    // ZwCnC3_mod_q(e,q,e);
 
 
-    Term t_prime[N3];
+    // Term t_prime[N3];
 
-    for(int i = 0;i<N;i++){
-        t_prime[i] = E.a[i];
-        t_prime[i+N] = E.b[i];
-        t_prime[i+2*N] = E.c[i];
-    }
+    // for(int i = 0;i<N;i++){
+    //     t_prime[i] = E.a[i];
+    //     t_prime[i+N] = E.b[i];
+    //     t_prime[i+2*N] = E.c[i];
+    // }
+
+    // for(int i = 0;i<N3;i++){
+    //     t_prime[i] = e[i];
+    // }
 
     // printf("In_Encrypt : T : \n");
     // poly_Zw_print(t_prime,N3);
@@ -199,7 +212,7 @@ void ppke_encrypt(unsigned char* c,Term* phi, Term *h, Term* m){
 
     unsigned char t_seed[LENGTH_OF_HASH];
 
-    sha3_512(t_seed,(unsigned char*)(&t_prime),N3*2);
+    sha3_512(t_seed,(unsigned char*)(&e),N3*2);
     // printf("IN_ENCRYPT t_seed : \n");
     // for(int i = 0;i<LENGTH_OF_HASH;i++){
     //     printf("%d ",t_seed[i]);
@@ -213,9 +226,9 @@ void ppke_encrypt(unsigned char* c,Term* phi, Term *h, Term* m){
     // poly_Zw_print(mask,N3);
     // printf("\n-------------------\n");
 
-    group_ring MASK;
+    // group_ring MASK;
 
-    poly_to_CnC3(mask,&MASK);
+    // poly_to_CnC3(mask,&MASK);
 
     
 
@@ -227,8 +240,8 @@ void ppke_encrypt(unsigned char* c,Term* phi, Term *h, Term* m){
     // poly_ZwCnC3_print(&MASK);
     // printf("\n------------------------------------\n");
 
-    poly_ZwCnC3_sub(&M,&MASK,&M);//
-    poly_ZwCnC3_mod(&M,P,&M);// M = M - MASK
+    ZwCnC3_sub(m,mask,m);//
+    ZwCnC3_mod_q(m,P,m);// M = M - MASK
     
     // printf("M - MASK: \n");
     // poly_ZwCnC3_print(M);
@@ -245,14 +258,14 @@ void ppke_encrypt(unsigned char* c,Term* phi, Term *h, Term* m){
     // poly_ZwCnC3_print(M);
     // printf("\n------------------------------------\n");
 
-    poly_ZwCnC3_add(&E,&M,&E);
+    ZwCnC3_add(e,m,e);
 
-    poly_ZwCnC3_mod(&E,q,&E);
+    // ZwCnC3_mod_q(e,q,e);
 
     // printf("CipherText_In_Encrypt : M' : \n");
     // poly_ZwCnC3_print(E);
     // printf("\n------------------------------------\n");
-    CnC3_to_poly(&E,e);
+    // CnC3_to_poly(&E,e);
 
     // printf("Cipher polynomial: \n");poly_Zw_print(e,N3);
 
@@ -276,31 +289,31 @@ void ppke_decrypt(Term *a, const unsigned char * ciphertext, Term *f){
     Term P = {p_,0};
     Term q = {Q,0};
 
-    group_ring A;
-    group_ring F;
+    // group_ring A;
+    // group_ring F;
 
-    poly_to_CnC3(a,&A);
-    poly_to_CnC3(f,&F);
+    // poly_to_CnC3(a,&A);
+    // poly_to_CnC3(f,&F);
 
-    group_ring E;
+    // group_ring E;
 
     Term e[N3];
 
     poly_unpack_Sq_frombytes(e,ciphertext);
 
-    poly_to_CnC3(e,&E);
+    // poly_to_CnC3(e,&E);
 
-    poly_ZwCnC3_mod(&F,q,&F);
-    poly_ZwCnC3_mod(&E,q,&E);
+    // ZwCnC3_mod_q(f,q,f);
+    // ZwCnC3_mod_q(e,q,e);
 
     // printf("CipherText_In_Decrypt : C : \n");
     // poly_ZwCnC3_print(E);
     // printf("\n------------------------------------\n");
 
-    poly_ZwCnC3_mul(&F,&E,T,&A);
-    poly_ZwCnC3_mod(&A,q,&A);// A = E*F
+    Zw_CnC3_multiply(f,e,a);
+    // ZwCnC3_mod_q(a,q,a);// A = E*F
 
-    poly_ZwCnC3_mod(&A,P,&A);
+    ZwCnC3_mod_q(a,P,a);
 
 
 
@@ -310,7 +323,7 @@ void ppke_decrypt(Term *a, const unsigned char * ciphertext, Term *f){
 
 
     Term t[N3];
-    group_ring T_;
+    // group_ring T_;
     // group_ring *X;
     // X = &T_;
 
@@ -319,17 +332,17 @@ void ppke_decrypt(Term *a, const unsigned char * ciphertext, Term *f){
     // // printf("Address of T_ : %u\n",(unsigned char*)(&T));
     // printf("Address of T_ : %u\n",(unsigned char*)(T));
 
-    poly_to_CnC3(t,&T_);
+    // poly_to_CnC3(t,&T_);
 
-    poly_ZwCnC3_sub(&E,&A,&T_);
+    ZwCnC3_sub(e,a,t);
 
-    poly_ZwCnC3_mod(&T_,q,&T_);
+    ZwCnC3_mod_q(t,q,t);
 
-    for(int i = 0;i<N;i++){
-        t[i] = T_.a[i];
-        t[i+N] = T_.b[i];
-        t[i+2*N] = T_.c[i];
-    }
+    // for(int i = 0;i<N;i++){
+    //     t[i] = T_.a[i];
+    //     t[i+N] = T_.b[i];
+    //     t[i+2*N] = T_.c[i];
+    // }
 
 
 
@@ -361,9 +374,9 @@ void ppke_decrypt(Term *a, const unsigned char * ciphertext, Term *f){
     // printf("\n-------------------\n");
 
 
-    group_ring MASK;
+    // group_ring MASK;
 
-    poly_to_CnC3(mask,&MASK);
+    // poly_to_CnC3(mask,&MASK);
 
     // printf("IN DECRYPT MASK: ");
     // poly_ZwCnC3_print(&MASK);
@@ -372,11 +385,11 @@ void ppke_decrypt(Term *a, const unsigned char * ciphertext, Term *f){
     // poly_ZwCnC3_mod(&MASK,q,&MASK);
     // poly_ZwCnC3_mod(A,q,A);
 
-    poly_ZwCnC3_add(&A,&MASK,&A);
+    ZwCnC3_add(a,mask,a);
 
-    poly_ZwCnC3_mod(&A,P,&A);
+    ZwCnC3_mod_q(a,P,a);
 
-    CnC3_to_poly(&A,a);
+    // CnC3_to_poly(&A,a);
     
 
     // printf("Decrypted Text:  \n");

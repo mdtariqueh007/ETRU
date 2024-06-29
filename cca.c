@@ -34,9 +34,9 @@ int CCA_encrypt(unsigned char *c,const unsigned char *m,unsigned char *pk){
 
     // printf("\n***********************************************\n");
 
-    unsigned char tmpmsg[CHAR_BYTES];
+    // unsigned char tmpmsg[CHAR_BYTES];
 
-    poly_S3m_tobytes(tmpmsg,mprime);
+    // poly_S3m_tobytes(tmpmsg,mprime);
 
     // printf("\n*******************   TEMP MESSAGE TEXT           ****************************\n");
 

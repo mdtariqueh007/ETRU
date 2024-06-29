@@ -133,7 +133,7 @@ int main(){
 
         // Generate the public/private keypair
         if ( (ret_val = CCA_keypair(pk, sk)) <= 0) {
-            printf("crypto_kem_keypair returned <%d>\n", ret_val);
+            printf("crypto_cca_keypair returned <%d>\n", ret_val);
             return KAT_CRYPTO_FAILURE;
         }
         
@@ -146,7 +146,7 @@ int main(){
         start_enc = cpucycles_start();
         // Encrypt the message
         if ( (ret_val = CCA_encrypt(ct,input_message,pk)) != 0) {
-            printf("crypto_kem_enc returned <%d>\n", ret_val);
+            printf("crypto_cca_enc returned <%d>\n", ret_val);
             return KAT_CRYPTO_FAILURE;
         }
         end_enc = cpucycles_stop();
@@ -155,7 +155,7 @@ int main(){
 
         start_dec = cpucycles_start();
         if ( (ret_val = CCA_decrypt(decrypted_msg,ct,sk,pk)) != 0) {
-            printf("crypto_kem_dec returned <%d>\n", ret_val);
+            printf("crypto_cca_dec returned <%d>\n", ret_val);
             return KAT_CRYPTO_FAILURE;
         }
         end_dec = cpucycles_stop();

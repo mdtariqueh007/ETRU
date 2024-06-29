@@ -46,6 +46,17 @@ void poly_Zw_shift_t(const Term*f ,int t, Term *r);
 #define poly_Zw_cmp CRYPTO_NAMESPACE(poly_Zw_cmp)
 int poly_Zw_cmp(const Term* a, const Term *b,int len);
 
+#define Zw_CnC3_multiply CRYPTO_NAMESPACE(Zw_CnC3_multiply)
+void Zw_CnC3_multiply(Term *f, Term *g, Term *r);
+
+#define ZwCnC3_add CRYPTO_NAMESPACE(ZwCnC3_add)
+#define ZwCnC3_sub CRYPTO_NAMESPACE(ZwCnC3_sub)
+#define ZwCnC3_mod_q CRYPTO_NAMESPACE(ZwCnC3_mod_q)
+void ZwCnC3_add(const Term* a, const Term *b, Term* r);
+void ZwCnC3_sub(const Term* a, const Term *b, Term* r);
+void ZwCnC3_mod_q(const Term* a, Term q, Term* r);
+
+
 #endif
 
 

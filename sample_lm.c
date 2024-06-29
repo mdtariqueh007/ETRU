@@ -20,7 +20,7 @@ void sample_fixed_type_lm(int *r, const unsigned char u[N3_SAMPLE_BYTES])
 }
 
 void sample_lm(Term *r, const unsigned char u[N3_SAMPLE_BYTES]){
-    int map[4][2] = {{0,0},{1,0},{0,1},{-1,-1}};
+    int map[4][2] = {{0,0},{1,0},{0,1},{2,2}};
 
     int arr[N3];
 
